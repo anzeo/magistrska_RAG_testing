@@ -4,7 +4,9 @@
 Za pravilno delovanje skript je priporočena uporaba `Python 3.11.9`.
 
 Da se namestijo vse potrebne knjižnice za delovanje, je potrebno na začetku pognati sledeči ukaz:
-```pip install -r requirements.txt```.
+```
+pip install -r requirements.txt
+```
 
 ## Skripte
 
