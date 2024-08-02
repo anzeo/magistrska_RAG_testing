@@ -1,0 +1,152 @@
+- vprasanje: "Kako se razlaga pojem \"uvajalec\" v tej uredbi?"
+  odgovor_enota: "rct_13"
+
+- vprasanje: "Kaj je namen te uredbe in katera področja pokriva?"
+  odgovor_enota: "art_1"
+
+- vprasanje: "Kje se uredba uporablja?"
+  odgovor_enota: "art_2"
+
+- vprasanje: "Kako so opredeljeni pojmi, ki se uporabljajo v uredbi?"
+  odgovor_enota: "art_3"
+
+- vprasanje: "Katere so prepovedane prakse UI?"
+  odgovor_enota: "art_5"
+
+- vprasanje: "Kdaj se sistem UI šteje za visokotveganega?"
+  odgovor_enota: "art_6"
+
+- vprasanje: "Kakšni so predpisani sistemi za obvladovanje tveganja?"
+  odgovor_enota: "art_9"
+
+- vprasanje: "Kako so določene zahteve glede podatkov in upravljanja podatkov za visokotvegane sisteme UI?"
+  odgovor_enota: "art_10"
+
+- vprasanje: "Kakšna tehnična dokumentacija je potrebna za visokotvegani sistem UI?"
+  odgovor_enota: "art_11"
+
+- vprasanje: "Ali je potrebno voditi evidenco o dogodkih v sistemu UI?"
+  odgovor_enota: "art_12"
+
+- vprasanje: "Katere zahteve morajo izpolnjevati visokotvegani sistemi UI v zvezi s preglednostjo in zagotavljanjem informacij uvajalcem?"
+  odgovor_enota: "art_13"
+
+- vprasanje: "Katere zahteve morajo izpolnjevati visokotvegani sistemi UI, da zagotovijo ustrezen človeški nadzor med njihovo uporabo?"
+  odgovor_enota: "art_14"
+
+- vprasanje: "Kakšni morajo biti sistemi iz vidika robustnosti in varnosti?"
+  odgovor_enota: "art_15"
+
+- vprasanje: "Kakšne obveznosti imajo ponudniki visokotveganih sistemov UI?"
+  odgovor_enota: "art_16"
+
+- vprasanje: "Kako uredba določa zahteve za vzpostavitev sistema upravljanja kakovosti pri ponudnikih visokotveganih sistemov UI?"
+  odgovor_enota: "art_17"
+
+- vprasanje: "Kakšne so obveznosti ponudnikov visokotveganih sistemov UI glede vodenja in hranjenja dokumentacije po tem, ko je sistem dan na trg ali v uporabo, in katere vrste dokumentacije morajo hraniti ter za kako dolgo?"
+  odgovor_enota: "art_18"
+
+- vprasanje: "Kakšne obveznosti imajo uvozniki visokotveganih sistemov UI?"
+  odgovor_enota: "art_23"
+
+- vprasanje: "Kakšne so obveznosti distributerjev visokotveganih sistemov UI?"
+  odgovor_enota: "art_24"
+
+- vprasanje: "Katere so obveznosti uvajalcev visokotveganih sistemov UI?"
+  odgovor_enota: "art_26"
+
+- vprasanje: "Kaj velja za priglasitvene organe?"
+  odgovor_enota: "art_28"
+
+- vprasanje: "Kakšen je postopek priglasitve?"
+  odgovor_enota: "art_30"
+
+- vprasanje: "Katere zahteve morajo izpolnjevati priglašeni organi za izvajanje dejavnosti ugotavljanja skladnosti visokotveganih sistemov UI po tej uredbi?"
+  odgovor_enota: "art_31"
+
+- vprasanje: "Kako se vzpostavlja in zagotavlja usklajevanje ter sodelovanje med priglašenimi organi?"
+  odgovor_enota: "art_38"
+
+- vprasanje: "Kakšne so zahteve glede izdaje, veljavnosti, podaljšanja in preklica certifikatov za sisteme UI po tej uredbi?"
+  odgovor_enota: "art_44"
+
+- vprasanje: "Kakšne so zahteve za EU izjavo o skladnosti za visokotvegane sisteme UI po tej uredbi?"
+  odgovor_enota: "art_47"
+
+- vprasanje: "Kakšne so obveznosti ponudnikov in uvajalcev sistemov UI glede preglednosti?"
+  odgovor_enota: "art_50"
+
+- vprasanje: "Kakšen je postopek razvrščanja modelov UI za splošne namene?"
+  odgovor_enota: "art_52"
+
+- vprasanje: "Kakšne so obveznosti ponudnikov modelov UI za splošne namene?"
+  odgovor_enota: "art_53"
+
+- vprasanje: "Kakšne so obveznosti ponudnikov modelov UI za splošne namene s sistemskim tveganjem?"
+  odgovor_enota: "art_55"
+
+- vprasanje: "Kaj velja za testiranje visokotveganih sistemov UI v realnih razmerah?"
+  odgovor_enota: "art_60"
+
+- vprasanje: "Opiši strukturo Evropskega odbora za umetno inteligenco."
+  odgovor_enota: "art_65"
+
+- vprasanje: "Kakšne so naloge Odbora?"
+  odgovor_enota: "art_66"
+
+- vprasanje: "Opiši svetovalni forum."
+  odgovor_enota: "art_67"
+
+- vprasanje: "Kakšna so pravila poročanja o resnih incidentih?"
+  odgovor_enota: "art_73"
+
+- vprasanje: "Kako uredba določa izvajanje nadzora trga nad visokotveganimi sistemi UI in katere postopke ter obveznosti vključuje za organe za nadzor trga?"
+  odgovor_enota: "art_74"
+
+- vprasanje: "Kako so nacionalni javni organi pooblaščeni za nadzor nad spoštovanjem temeljnih pravic v zvezi z visokotveganimi sistemi UI, in kakšne so njihove pravice in postopki za dostop do dokumentacije ter testiranje teh sistemov?"
+  odgovor_enota: "art_77"
+
+- vprasanje: "Kakšna pravila glede zaupnosti morajo spoštovati vse osebe, ki sodelujejo pri uporabi uredbe?"
+  odgovor_enota: "art_78"
+
+- vprasanje: "Kateri postopek morajo organi za nadzor trga v državah članicah upoštevati pri obravnavi sistemov UI, ki predstavljajo tveganje?"
+  odgovor_enota: "art_79"
+
+- vprasanje: "Kakšen postopek morajo organi za nadzor trga v državah članicah upoštevati, če ugotovijo, da visokotvegani sistem UI, ki je skladen s to uredbo, kljub temu predstavlja tveganje?"
+  odgovor_enota: "art_82"
+
+- vprasanje: "Kakšne ukrepe mora sprejeti organ za nadzor trga, če ugotovi formalne neskladnosti pri visokotveganem sistemu UI in kakšne so posledice, če ponudnik neskladnosti ne odpravi?"
+  odgovor_enota: "art_83"
+
+- vprasanje: "Kdo lahko vloži pritožbo pri organu za nadzor trga glede kršitev določb te uredbe in kako se te pritožbe obravnavajo?"
+  odgovor_enota: "art_85"
+
+- vprasanje: "Kako se zagotavlja zaščita oseb, ki prijavijo kršitve uredbe o umetni inteligenci, in kateri postopki so predvideni za prijavo kršitev te uredbe?"
+  odgovor_enota: "art_87"
+
+- vprasanje: "Kako Urad za UI načrtuje spremljanje učinkovitega izvajanja te uredbe in skladnosti z njo s strani ponudnikov modelov UI za splošne namene?"
+  odgovor_enota: "art_89"
+
+- vprasanje: "Kakšni so postopki, ko komisija ali urad za UI zahteva dokumentacijo ali informacije od ponudnika modela UI za splošne namene, in kako se zagotavlja, da so informacije, ki jih predložijo, popolne in pravilne?"
+  odgovor_enota: "art_91"
+
+- vprasanje: "Kakšne smernice mora Komisija pripraviti za praktično izvajanje te uredbe in katere vidike ter potrebe mora upoštevati pri pripravi teh smernic?"
+  odgovor_enota: "art_96"
+
+- vprasanje: "Katere kazni in druge izvršilne ukrepe morajo države članice določiti za kršitve te uredbe, in kakšne smernice morajo upoštevati pri določitvi teh kazni?"
+  odgovor_enota: "art_99"
+
+- vprasanje: "Katere dejavnike mora Evropski nadzornik za varstvo podatkov upoštevati pri odločanju o naložitvi upravne globe institucijam, organom, uradom in agencijam Unije za kršitve te uredbe?"
+  odgovor_enota: "art_100"
+
+- vprasanje: "Kako komisija določi znesek globe, naložene ponudnikom modelov UI za splošne namene, in katere dejavnike mora upoštevati pri tem?"
+  odgovor_enota: "art_101"
+
+- vprasanje: "Kako so določene prehodne zahteve za sisteme UI in modele UI za splošne namene, ki so bili dani na trg pred določenimi datumi?"
+  odgovor_enota: "art_111"
+
+- vprasanje: "Kako komisija načrtuje izvajanje ocenjevanja in pregledov, povezanih z uredbo o umetni inteligenci?"
+  odgovor_enota: "art_112"
+
+- vprasanje: "Kdaj začne uredba veljati in se uporabljati?"
+  odgovor_enota: "art_113"
