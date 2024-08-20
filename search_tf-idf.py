@@ -17,7 +17,7 @@ def preprocess(text):
     for sentence in doc.sentences:
         for token in sentence.tokens:
             lemma = token.words[0].lemma
-            if lemma.isalpha() and lemma.lower() not in stop_words:
+            if (lemma.isalpha() or lemma.isdigit()) and lemma.lower() not in stop_words:
                 tokens.append(lemma.lower())
     
     return ' '.join(tokens)
@@ -48,8 +48,11 @@ def search(query, tfidf_matrix, vectorizer, top_n=10):
 if __name__ == '__main__':
     with open('ai_act.yaml', 'r') as file:
         data = yaml.safe_load(file)
+    
+    cleni = [f"{d['id_elementa']}" for d in data['cleni']]
+    tocke = [f"{d['id_elementa']}" for d in data['tocke']]
+    enote = cleni + tocke
 
-    clen_numbers = [d['clen'] for d in data['cleni']]
     preprocessed_cleni = [
         preprocess(
             d['poglavje']['naslov'] + "\n" + 
@@ -57,13 +60,19 @@ if __name__ == '__main__':
             d['naslov'] + "\n" + 
             d['vsebina']
         ) for d in data['cleni']]
+    
+    preprocessed_tocke = [
+        preprocess(d['vsebina']) for d in data['tocke']
+    ]
+
+    preprocessed_enote = preprocessed_cleni + preprocessed_tocke
 
     vectorizer = TfidfVectorizer()
-    tfidf_matrix = vectorizer.fit_transform(preprocessed_cleni)
+    tfidf_matrix = vectorizer.fit_transform(preprocessed_enote)
 
-    query = "Kakšne so lahko globe?"
+    query = "Kdaj začne uredba veljati in se uporabljati?"
     top_indices, scores = search(query, tfidf_matrix, vectorizer)
 
+    print("Relevantne enote:")
     for idx, score in zip(top_indices, scores):
-        clen_number = clen_numbers[idx]
-        print(f"Člen {clen_number} with score {score}")
+        print(f"{enote[idx]} s podobnostjo {score}")
