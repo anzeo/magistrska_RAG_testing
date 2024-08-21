@@ -28,11 +28,9 @@ def search(query, embeddings, top_n=10):
     return top_indices, similarity_scores[top_indices]
 
 
-if __name__ == '__main__':
+def prepare_data():
     with open('ai_act.yaml', 'r') as file:
         data = yaml.safe_load(file)
-
-    query = "Katere zahteve morajo izpolnjevati visokotvegani sistemi UI v zvezi s preglednostjo in zagotavljanjem informacij uvajalcem?"
 
     cleni = [f"{d['id_elementa']}" for d in data['cleni']]
     tocke = [f"{d['id_elementa']}" for d in data['tocke']]
@@ -50,9 +48,16 @@ if __name__ == '__main__':
         preprocess(d['vsebina']) for d in data['tocke']
     ]
 
-    preprocessed_enote_embeddings = preprocessed_cleni_embeddings + preprocessed_tocke_embeddings
+    preprocessed_enote_embeddings = np.array(preprocessed_cleni_embeddings + preprocessed_tocke_embeddings)
+
+    return enote, preprocessed_enote_embeddings
     
-    top_indices, scores = search(query, np.array(preprocessed_enote_embeddings))
+
+
+def get_relevant_results(query="Katere zahteve morajo izpolnjevati visokotvegani sistemi UI v zvezi s preglednostjo in zagotavljanjem informacij uvajalcem?"):
+    enote, preprocessed_enote_embeddings = prepare_data()
+
+    top_indices, scores = search(query, preprocessed_enote_embeddings)
 
     print("Relevantne enote:")
     for idx, score in zip(top_indices, scores):
