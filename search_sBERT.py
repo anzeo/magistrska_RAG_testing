@@ -18,12 +18,12 @@ def preprocess(text):
     return np.mean(chunk_embeddings, axis=0)
 
 
-def search(query, embeddings, top_n=10):
+def search(query, embeddings):
     query_embedding = model.encode(query)
 
     similarity_scores = model.similarity(query_embedding, embeddings).numpy().flatten()
 
-    top_indices = np.argsort(similarity_scores)[-top_n:][::-1]
+    top_indices = np.argsort(similarity_scores)[::-1]
 
     return top_indices, similarity_scores[top_indices]
 
@@ -48,10 +48,9 @@ def prepare_data():
         preprocess(d['vsebina']) for d in data['tocke']
     ]
 
-    preprocessed_enote_embeddings = np.array(preprocessed_cleni_embeddings + preprocessed_tocke_embeddings)
+    preprocessed_enote_embeddings = preprocessed_cleni_embeddings + preprocessed_tocke_embeddings
 
-    return enote, preprocessed_enote_embeddings
-    
+    return enote, np.array(preprocessed_enote_embeddings) 
 
 
 def get_relevant_results(query="Katere zahteve morajo izpolnjevati visokotvegani sistemi UI v zvezi s preglednostjo in zagotavljanjem informacij uvajalcem?"):
