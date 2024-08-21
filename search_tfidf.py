@@ -23,16 +23,7 @@ def preprocess(text):
     return ' '.join(tokens)
 
 
-# def preprocess(text):
-#     tokens = word_tokenize(text)
-#     tokens = [word.lower() for word in tokens if word.isalpha()]
-#     tokens = [word for word in tokens if word not in stop_words]
-#     tokens = [lemmatizer.lemmatize(word) for word in tokens]
-    
-#     return ' '.join(tokens)
-
-
-def search(query, tfidf_matrix, vectorizer, top_n=10):
+def search(query, tfidf_matrix, vectorizer):
     preprocessed_query = preprocess(query)
     
     # Convert the query to a TF-IDF vector
@@ -40,12 +31,12 @@ def search(query, tfidf_matrix, vectorizer, top_n=10):
     
     similarity_scores = cosine_similarity(query_vector, tfidf_matrix).flatten()
     
-    top_indices = np.argsort(similarity_scores)[-top_n:][::-1]
+    top_indices = np.argsort(similarity_scores)[::-1]
     
     return top_indices, similarity_scores[top_indices]
 
 
-if __name__ == '__main__':
+def prepare_data():
     with open('ai_act.yaml', 'r') as file:
         data = yaml.safe_load(file)
     
@@ -70,7 +61,12 @@ if __name__ == '__main__':
     vectorizer = TfidfVectorizer()
     tfidf_matrix = vectorizer.fit_transform(preprocessed_enote)
 
-    query = "Kdaj začne uredba veljati in se uporabljati?"
+    return enote, tfidf_matrix, vectorizer
+
+
+def get_relevant_results(query="Kdaj začne uredba veljati in se uporabljati?"):
+    enote, tfidf_matrix, vectorizer = prepare_data()
+    
     top_indices, scores = search(query, tfidf_matrix, vectorizer)
 
     print("Relevantne enote:")
