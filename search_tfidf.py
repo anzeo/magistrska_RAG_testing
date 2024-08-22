@@ -23,15 +23,20 @@ def preprocess(text):
     return ' '.join(tokens)
 
 
-def search(query, tfidf_matrix, vectorizer):
+def search(query, tfidf_matrix, vectorizer, top_n=None):
     preprocessed_query = preprocess(query)
     
     # Convert the query to a TF-IDF vector
     query_vector = vectorizer.transform([preprocessed_query])
     
     similarity_scores = cosine_similarity(query_vector, tfidf_matrix).flatten()
-    
-    top_indices = np.argsort(similarity_scores)[::-1]
+
+    if top_n == None:
+        # Take all relevant results
+        top_indices = np.argsort(similarity_scores)[::-1]
+    else:
+        # Take only the top n relevant results
+        top_indices = np.argsort(similarity_scores)[-top_n:][::-1]
     
     return top_indices, similarity_scores[top_indices]
 
@@ -64,10 +69,10 @@ def prepare_data():
     return enote, tfidf_matrix, vectorizer
 
 
-def get_relevant_results(query="Kdaj začne uredba veljati in se uporabljati?"):
+def get_relevant_results(query="Kdaj začne uredba veljati in se uporabljati?", top_n=None):
     enote, tfidf_matrix, vectorizer = prepare_data()
     
-    top_indices, scores = search(query, tfidf_matrix, vectorizer)
+    top_indices, scores = search(query, tfidf_matrix, vectorizer, top_n)
 
     print("Relevantne enote:")
     for idx, score in zip(top_indices, scores):

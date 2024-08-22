@@ -18,12 +18,17 @@ def preprocess(text):
     return np.mean(chunk_embeddings, axis=0)
 
 
-def search(query, embeddings):
+def search(query, embeddings, top_n=None):
     query_embedding = model.encode(query)
 
     similarity_scores = model.similarity(query_embedding, embeddings).numpy().flatten()
 
-    top_indices = np.argsort(similarity_scores)[::-1]
+    if top_n == None:
+        # Take all relevant results
+        top_indices = np.argsort(similarity_scores)[::-1]
+    else:
+        # Take only the top n relevant results
+        top_indices = np.argsort(similarity_scores)[-top_n:][::-1]
 
     return top_indices, similarity_scores[top_indices]
 
@@ -53,10 +58,10 @@ def prepare_data():
     return enote, np.array(preprocessed_enote_embeddings) 
 
 
-def get_relevant_results(query="Katere zahteve morajo izpolnjevati visokotvegani sistemi UI v zvezi s preglednostjo in zagotavljanjem informacij uvajalcem?"):
+def get_relevant_results(query="Katere zahteve morajo izpolnjevati visokotvegani sistemi UI v zvezi s preglednostjo in zagotavljanjem informacij uvajalcem?", top_n=None):
     enote, preprocessed_enote_embeddings = prepare_data()
 
-    top_indices, scores = search(query, preprocessed_enote_embeddings)
+    top_indices, scores = search(query, preprocessed_enote_embeddings, top_n)
 
     print("Relevantne enote:")
     for idx, score in zip(top_indices, scores):
