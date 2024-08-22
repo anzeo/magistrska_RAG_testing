@@ -3,7 +3,7 @@ import yaml
 import numpy as np
 
 # Load the pre-trained sBERT model
-model = SentenceTransformer('paraphrase-multilingual-MiniLM-L12-v2')
+model = SentenceTransformer('paraphrase-multilingual-mpnet-base-v2')
 
 
 def chunk_text(text, chunk_size=512):
