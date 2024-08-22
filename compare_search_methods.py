@@ -1,17 +1,17 @@
 import yaml
-import search_tfidf as s_tfidf
-import search_sBERT as s_sbert
+import search_tfidf as search_tfidf
+import search_sBERT as search_sbert
 
 
 def get_tfidf_avg_rank():
     avg_rank = 0
 
-    enote, tfidf_matrix, vectorizer = s_tfidf.prepare_data()
+    enote, tfidf_matrix, vectorizer = search_tfidf.prepare_data()
 
     for test in test_data:
         query = test['vprasanje']
         target_unit = test['odgovor_enota']
-        top_indices, _ = s_tfidf.search(query, tfidf_matrix, vectorizer)
+        top_indices, _ = search_tfidf.search(query, tfidf_matrix, vectorizer)
 
         target_unit_rank = 1
         for idx in top_indices:
@@ -27,12 +27,12 @@ def get_tfidf_avg_rank():
 def get_sbert_avg_rank():
     avg_rank = 0
 
-    enote, preprocessed_enote_embeddings = s_sbert.prepare_data()
+    enote, preprocessed_enote_embeddings = search_sbert.prepare_data()
     
     for test in test_data:
         query = test['vprasanje']
         target_unit = test['odgovor_enota']
-        top_indices, _ = s_sbert.search(query, preprocessed_enote_embeddings)
+        top_indices, _ = search_sbert.search(query, preprocessed_enote_embeddings)
 
         target_unit_rank = 1
         for idx in top_indices:
@@ -50,10 +50,6 @@ if __name__ == '__main__':
         test_data = yaml.safe_load(file)    
 
     tfidf_avg_rank = get_tfidf_avg_rank()
-
-    with open('test_set.yaml', 'r') as file:
-        test_data = yaml.safe_load(file)    
-
     sbert_avg_rank = get_sbert_avg_rank()
 
     print(f"Povprečen rank ciljne enote s TF-IDF: {tfidf_avg_rank:.2f}")
