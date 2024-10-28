@@ -1,0 +1,119 @@
+- vprasanje_en: "How does the AI Act help ensure that the AI tools we use in school are safe, trustworthy, and protect students' rights?"
+  vprasanje: "Kako akt o umetni inteligenci pomaga zagotoviti, da so orodja umetne inteligence, ki jih uporabljamo v šoli, varna, zaupanja vredna in ščitijo pravice učencev?"
+  odgovor_enota: "art_1"
+
+- vprasanje_en: "Does the AI Act apply to the AI tools we use in school, even if they were created outside the EU, or are used for non-professional purposes?"
+  vprasanje: "Ali akt o umetni inteligenci velja za orodja umetne inteligence, ki jih uporabljamo v šolah, tudi če so bila ustvarjena zunaj EU ali se uporabljajo v nepoklicne namene?"
+  odgovor_enota: "art_2"
+
+- vprasanje_en: "Are there any AI tools that are banned in schools because they could manipulate students or invade their privacy?"
+  vprasanje: "Ali obstajajo orodja umetne inteligence, ki so v šolah prepovedana, ker bi lahko manipulirala z učenci ali posegala v njihovo zasebnost?"
+  odgovor_enota: "art_5"
+
+- vprasanje_en: "How can I know if an AI tool I want to use in the classroom is considered high-risk and needs special approval?"
+  vprasanje: "Kako lahko vem, ali se orodje umetne inteligence, ki ga želim uporabljati v učilnici, šteje za visoko tvegano in potrebuje posebno odobritev?"
+  odgovor_enota: "art_6"
+
+- vprasanje_en: "What steps are involved in making sure that an AI system used in education is safe for students, especially minors?"
+  vprasanje: "Kateri koraki so vključeni v zagotovitev, da je sistem umetne inteligence, ki se uporablja v izobraževanju, varen za študente, zlasti mladoletnike?"
+  odgovor_enota: "art_9"
+
+- vprasanje_en: "How can we ensure that the data used to train AI systems in schools is accurate and fair, so it doesn’t lead to biased decisions about students?"
+  vprasanje: "Kako lahko zagotovimo, da so podatki, ki se uporabljajo za usposabljanje sistemov UI v šolah, točni in pošteni, tako da ne vodijo do pristranskih odločitev o učencih?"
+  odgovor_enota: "art_10"
+
+- vprasanje_en: "Why is it important to have clear and updated documentation when using AI systems in education, and how can this help ensure the technology is safe for students?"
+  vprasanje: "Zakaj je pomembno imeti jasno in posodobljeno dokumentacijo pri uporabi sistemov UI v izobraževanju in kako lahko to pomaga zagotoviti, da je tehnologija varna za študente?"
+  odgovor_enota: "art_11"
+
+- vprasanje_en: "How can having human oversight in AI systems help teachers ensure that decisions made by AI, such as grading or personalized learning, are fair and accurate?"
+  vprasanje: "Kako lahko človeški nadzor nad sistemi umetne inteligence pomaga učiteljem zagotoviti, da so odločitve, ki jih sprejme umetna inteligenca, kot je ocenjevanje ali prilagojeno učenje, poštene in točne?"
+  odgovor_enota: "art_14"
+
+- vprasanje_en: "Why is it important for AI systems used in schools, like grading or student feedback tools, to be accurate, secure, and resistant to errors or hacking?"
+  vprasanje: "Zakaj je pomembno, da so sistemi umetne inteligence, ki se uporabljajo v šolah, kot orodja za ocenjevanje ali povratne informacije učencev, natančni, varni in odporni na napake ali vdore?"
+  odgovor_enota: "art_15"
+
+- vprasanje_en: "What responsibilities do companies have to ensure the safety and reliability of AI tools used in education?"
+  vprasanje: "Kakšne odgovornosti imajo podjetja za zagotavljanje varnosti in zanesljivosti orodij UI, ki se uporabljajo v izobraževanju?"
+  odgovor_enota: "art_16"
+
+- vprasanje_en: "Why is it important for companies that create high-risk AI systems to keep documentation for ten years, and what types of documents do they need to maintain?"
+  vprasanje: "Zakaj je pomembno, da podjetja, ki ustvarjajo visoko tvegane sisteme umetne inteligence, hranijo dokumentacijo deset let in katere vrste dokumentov morajo vzdrževati?"
+  odgovor_enota: "art_18"
+
+- vprasanje_en: "Why do companies need to keep automatically generated logs from high-risk AI systems, and how long should they store this information?"
+  vprasanje: "Zakaj morajo podjetja hraniti samodejno ustvarjene dnevnike iz sistemov umetne inteligence z visokim tveganjem in kako dolgo naj shranjujejo te podatke?"
+  odgovor_enota: "art_19"
+
+- vprasanje_en: "Why is it necessary for companies outside the EU to appoint an authorized representative within the EU before they can offer high-risk AI systems in the European market?"
+  vprasanje: "Zakaj morajo podjetja zunaj EU imenovati pooblaščenega zastopnika v EU, preden lahko na evropskem trgu ponudijo visoko tvegane sisteme umetne inteligence?"
+  odgovor_enota: "art_22"
+
+- vprasanje_en: "Why do importers of high-risk AI systems need to verify that the system complies with regulations before placing it on the market, and how does this help protect users?"
+  vprasanje: "Zakaj morajo uvozniki sistemov umetne inteligence z visokim tveganjem preveriti, ali je sistem skladen s predpisi, preden ga dajo na trg, in kako to pomaga zaščititi uporabnike?"
+  odgovor_enota: "art_23"
+
+- vprasanje_en: "How do schools know if the AI tools they want to use meet safety and quality standards?"
+  vprasanje: "Kako šole vedo, ali orodja umetne inteligence, ki jih želijo uporabljati, izpolnjujejo standarde varnosti in kakovosti?"
+  odgovor_enota: "art_30"
+
+- vprasanje_en: "Why is it important for AI systems to have certificates that are regularly reviewed, and what might happen if an AI system no longer meets the required standards?"
+  vprasanje: "Zakaj je pomembno, da imajo sistemi umetne inteligence certifikate, ki se redno pregledujejo, in kaj se lahko zgodi, če sistem umetne inteligence ne izpolnjuje več zahtevanih standardov?"
+  odgovor_enota: "art_44"
+
+- vprasanje_en: "How can students tell if they are interacting with an AI system, and why is it important for them to know?"
+  vprasanje: "Kako lahko učenci ugotovijo, ali komunicirajo s sistemom umetne inteligence in zakaj je pomembno, da vedo?"
+  odgovor_enota: "art_50"
+
+- vprasanje_en: "Why could some AI models be classified as \"systemic risks\" and how could this affect their use in everyday life?"
+  vprasanje: "Zakaj bi lahko nekatere modele umetne inteligence razvrstili kot \"sistemska tveganja\" in kako bi to lahko vplivalo na njihovo uporabo v vsakdanjem življenju?"
+  odgovor_enota: "art_52"
+
+- vprasanje_en: "How can teachers ensure that the AI tools they use in the classroom are safe, reliable, and comply with educational standards?"
+  vprasanje: "Kako lahko učitelji zagotovijo, da so orodja umetne inteligence, ki jih uporabljajo v razredu, varna, zanesljiva in skladna z izobraževalnimi standardi?"
+  odgovor_enota: "art_53"
+
+- vprasanje_en: "What steps should schools take to ensure that any AI technologies used in the classroom are tested properly and used safely?"
+  vprasanje: "Kakšne ukrepe bi morale šole sprejeti, da bi zagotovile, da so vse tehnologije umetne inteligence, ki se uporabljajo v učilnici, pravilno preizkušene in varno uporabljene?"
+  odgovor_enota: "art_60"
+
+- vprasanje_en: "Who can teachers turn to for support and guidance on using AI tools safely and effectively in the classroom?"
+  vprasanje: "Na koga se lahko učitelji obrnejo za podporo in smernice o varni in učinkoviti uporabi orodij umetne inteligence v razredu?"
+  odgovor_enota: "art_66"
+
+- vprasanje_en: "What should I do if an AI tool I’m using in the classroom causes a serious problem, and who do I report it to?"
+  vprasanje: "Kaj naj storim, če orodje umetne inteligence, ki ga uporabljam v učilnici, povzroči resno težavo in komu naj to prijavim?"
+  odgovor_enota: "art_73"
+
+- vprasanje_en: "Who checks if the AI tools we use in school respect students' rights, and how do they make sure the tools are fair and non-discriminatory?"
+  vprasanje: "Kdo preverja, ali orodja umetne inteligence, ki jih uporabljamo v šoli, spoštujejo pravice učencev in kako poskrbijo, da so orodja poštena in nediskriminatorna?"
+  odgovor_enota: "art_77"
+
+- vprasanje_en: "How is the privacy of student data protected when using AI tools in the classroom, and who makes sure the information stays confidential?"
+  vprasanje: "Kako je varovana zasebnost podatkov učencev pri uporabi orodij UI v učilnici in kdo skrbi, da informacije ostanejo zaupne?"
+  odgovor_enota: "art_78"
+
+- vprasanje_en: "What happens if an AI tool that follows the rules still causes problems for students or their safety, and who is responsible for fixing it?"
+  vprasanje: "Kaj se zgodi, če orodje umetne inteligence, ki sledi pravilom, še vedno povzroča težave študentom ali njihovi varnosti in kdo je odgovoren, da to popravi?"
+  odgovor_enota: "art_82"
+
+- vprasanje_en: "If there's a problem with an AI tool we're using, who can ask the company for more information, and how does that process work?"
+  vprasanje: "Če obstaja težava z orodjem UI, ki ga uporabljamo, kdo lahko od podjetja zahteva več informacij in kako ta proces deluje?"
+  odgovor_enota: "art_91"
+
+- vprasanje_en: "What penalties could schools or teachers face if they use AI tools that don’t follow the EU rules?"
+  vprasanje: "Kakšne kazni bi lahko doletele šole ali učitelji, če uporabljajo orodja UI, ki ne upoštevajo pravil EU?"
+  odgovor_enota: "art_99"
+
+- vprasanje_en: "What happens if a company providing AI tools for education breaks the EU rules? Could they face any fines?"
+  vprasanje: "Kaj se zgodi, če podjetje, ki ponuja orodja UI za izobraževanje, krši pravila EU? Ali se lahko sooči s kakšno globo?"
+  odgovor_enota: "art_101"
+
+- vprasanje_en: "Will the rules for using AI in schools change over time, and who decides if updates are needed?"
+  vprasanje: "Ali se bodo pravila za uporabo umetne inteligence v šolah sčasoma spremenila in kdo odloča, ali so potrebne posodobitve?"
+  odgovor_enota: "art_112"
+
+- vprasanje_en: "When will the new AI regulations start to apply?"
+  vprasanje: "Kdaj bodo začeli veljati novi predpisi o umetni inteligenci?"
+  odgovor_enota: "art_113"
