@@ -1,6 +1,9 @@
+import os
 from sentence_transformers import SentenceTransformer
 import yaml
 import numpy as np
+
+EMBEDDINGS_FILE = 'embeddings/sBERT/embeddings.npy'
 
 # Load the pre-trained sBERT model
 model = SentenceTransformer('paraphrase-multilingual-mpnet-base-v2')
@@ -41,19 +44,30 @@ def prepare_data():
     tocke = [f"{d['id_elementa']}" for d in data['tocke']]
     enote = cleni + tocke
 
-    preprocessed_cleni_embeddings = [
-        preprocess(
-            d['poglavje']['naslov'] + "\n" + 
-            (d['oddelek']['naslov'] + "\n" if d['oddelek'] else '') + 
-            d['naslov'] + "\n" + 
-            d['vsebina']
-        ) for d in data['cleni']]
-    
-    preprocessed_tocke_embeddings = [
-        preprocess(d['vsebina']) for d in data['tocke']
-    ]
+    if os.path.exists(EMBEDDINGS_FILE):
+        print("Loading existing embeddings...")
+        preprocessed_enote_embeddings = np.load(EMBEDDINGS_FILE)
+    else:
+        print("Getting new embeddings and storing them to file...\n")
 
-    preprocessed_enote_embeddings = preprocessed_cleni_embeddings + preprocessed_tocke_embeddings
+        preprocessed_cleni_embeddings = [
+            preprocess(
+                d['poglavje']['naslov'] + "\n" + 
+                (d['oddelek']['naslov'] + "\n" if d['oddelek'] else '') + 
+                d['naslov'] + "\n" + 
+                d['vsebina']
+            ) for d in data['cleni']]
+        
+        preprocessed_tocke_embeddings = [
+            preprocess(d['vsebina']) for d in data['tocke']
+        ]
+
+        preprocessed_enote_embeddings = preprocessed_cleni_embeddings + preprocessed_tocke_embeddings
+
+        if not os.path.exists(os.path.dirname(EMBEDDINGS_FILE)):
+            os.makedirs(os.path.dirname(EMBEDDINGS_FILE), exist_ok=True)
+
+        np.save(EMBEDDINGS_FILE, preprocessed_enote_embeddings)
 
     return enote, np.array(preprocessed_enote_embeddings) 
 

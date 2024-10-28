@@ -1,14 +1,19 @@
+import os
+import joblib
 from nltk.corpus import stopwords
 from sklearn.metrics.pairwise import cosine_similarity
 import numpy as np
 from sklearn.feature_extraction.text import TfidfVectorizer
 import yaml
 import classla
+from scipy.sparse import save_npz, load_npz
 
-classla.download('sl')                  
-
-stop_words = set(stopwords.words('slovene'))
+classla.download('sl')
 nlp = classla.Pipeline('sl', processors='tokenize,pos,lemma')
+stop_words = set(stopwords.words('slovene'))
+
+EMBEDDINGS_FILE = 'embeddings/tfidf/embeddings.npz'
+VECTORIZER_FILE = 'embeddings/tfidf/vectorizer.pkl'
 
 def preprocess(text):
     doc = nlp(text)
@@ -43,28 +48,43 @@ def search(query, tfidf_matrix, vectorizer, top_n=None):
 
 def prepare_data():
     with open('ai_act.yaml', 'r') as file:
-        data = yaml.safe_load(file)
-    
+            data = yaml.safe_load(file)
+        
     cleni = [f"{d['id_elementa']}" for d in data['cleni']]
     tocke = [f"{d['id_elementa']}" for d in data['tocke']]
     enote = cleni + tocke
-
-    preprocessed_cleni = [
-        preprocess(
-            d['poglavje']['naslov'] + "\n" + 
-            (d['oddelek']['naslov'] + "\n" if d['oddelek'] else '') + 
-            d['naslov'] + "\n" + 
-            d['vsebina']
-        ) for d in data['cleni']]
     
-    preprocessed_tocke = [
-        preprocess(d['vsebina']) for d in data['tocke']
-    ]
+    if os.path.exists(EMBEDDINGS_FILE) and os.path.exists(VECTORIZER_FILE):
+        print("Loading existing embeddings...")
+        tfidf_matrix = load_npz(EMBEDDINGS_FILE)
+        vectorizer = joblib.load(VECTORIZER_FILE)
+    else:
+        print("Getting new embeddings and storing them to file...\n")
 
-    preprocessed_enote = preprocessed_cleni + preprocessed_tocke
+        preprocessed_cleni = [
+            preprocess(
+                d['poglavje']['naslov'] + "\n" + 
+                (d['oddelek']['naslov'] + "\n" if d['oddelek'] else '') + 
+                d['naslov'] + "\n" + 
+                d['vsebina']
+            ) for d in data['cleni']]
+        
+        preprocessed_tocke = [
+            preprocess(d['vsebina']) for d in data['tocke']
+        ]
 
-    vectorizer = TfidfVectorizer()
-    tfidf_matrix = vectorizer.fit_transform(preprocessed_enote)
+        preprocessed_enote = preprocessed_cleni + preprocessed_tocke
+
+        vectorizer = TfidfVectorizer()
+        tfidf_matrix = vectorizer.fit_transform(preprocessed_enote)
+
+        if not os.path.exists(os.path.dirname(EMBEDDINGS_FILE)):
+            os.makedirs(os.path.dirname(EMBEDDINGS_FILE), exist_ok=True)
+        if not os.path.exists(os.path.dirname(VECTORIZER_FILE)):
+            os.makedirs(os.path.dirname(VECTORIZER_FILE), exist_ok=True)
+
+        save_npz(EMBEDDINGS_FILE, tfidf_matrix)
+        joblib.dump(vectorizer, VECTORIZER_FILE)
 
     return enote, tfidf_matrix, vectorizer
 
