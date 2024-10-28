@@ -79,9 +79,9 @@ def prepare_data():
         tfidf_matrix = vectorizer.fit_transform(preprocessed_enote)
 
         if not os.path.exists(os.path.dirname(EMBEDDINGS_FILE)):
-            os.makedirs(os.path.dirname(EMBEDDINGS_FILE))
+            os.makedirs(os.path.dirname(EMBEDDINGS_FILE), exist_ok=True)
         if not os.path.exists(os.path.dirname(VECTORIZER_FILE)):
-            os.makedirs(os.path.dirname(VECTORIZER_FILE))
+            os.makedirs(os.path.dirname(VECTORIZER_FILE), exist_ok=True)
 
         save_npz(EMBEDDINGS_FILE, tfidf_matrix)
         joblib.dump(vectorizer, VECTORIZER_FILE)
