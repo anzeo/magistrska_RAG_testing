@@ -1,10 +1,13 @@
+import os
 import yaml
-import search_tfidf as search_tfidf
-import search_sBERT as search_sbert
 import matplotlib.pyplot as plt
 
+TEST_DATA_DIR = 'data/test'
+PLOTS_DIR = 'plots'
 
 def get_tfidf_performance():
+    import search_tfidf as search_tfidf
+
     avg_rank = 0
     ranks = []
 
@@ -28,6 +31,8 @@ def get_tfidf_performance():
 
 
 def get_sbert_performance():
+    import search_sBERT as search_sbert
+
     avg_rank = 0
     ranks = []
 
@@ -51,24 +56,32 @@ def get_sbert_performance():
 
 
 if __name__ == '__main__':
-    with open('test_set.yaml', 'r') as file:
-        test_data = yaml.safe_load(file)    
+    for test_data_filename in os.listdir(TEST_DATA_DIR):
+        with open(os.path.join(TEST_DATA_DIR, test_data_filename), 'r') as file:
+            test_data = yaml.safe_load(file)    
 
-    tfidf_avg_rank, tfidf_ranks = get_tfidf_performance()
-    sbert_avg_rank, sbert_ranks = get_sbert_performance()
+        print(f"Rezultati za podatke iz datoteke: {test_data_filename}")
 
-    print(f"Povprečen rank ciljne enote s TF-IDF: {tfidf_avg_rank:.2f}")
-    print(f"Povprečen rank ciljne enote z sBERT: {sbert_avg_rank:.2f}")
+        tfidf_avg_rank, tfidf_ranks = get_tfidf_performance()
+        sbert_avg_rank, sbert_ranks = get_sbert_performance()
 
-    plt.figure(figsize=(8, 6))  # Set the figure size
+        print(f"Povprečen rank ciljne enote s TF-IDF: {tfidf_avg_rank:.2f}")
+        print(f"Povprečen rank ciljne enote z sBERT: {sbert_avg_rank:.2f}")
 
-    # Use boxplot function to create the plot with labels
-    plt.boxplot([tfidf_ranks, sbert_ranks], patch_artist=True, tick_labels=['TF-IDF', 'sBERT'])
+        plt.figure(figsize=(8, 6))  # Set the figure size
 
-    # Add title and labels
-    plt.title('Primerjava povprečnega ranka ciljne enote')
-    plt.ylabel('Rank')
-    plt.xlabel('Metoda')
+        plt.boxplot([tfidf_ranks, sbert_ranks], patch_artist=True, tick_labels=['TF-IDF', 'sBERT'])
 
-    # Display the plot
+        plt.title(f'{test_data_filename}\nPrimerjava povprečnega ranga ciljne enote')
+        plt.ylabel('Rank')
+        plt.xlabel('Metoda')
+
+        if not os.path.exists(PLOTS_DIR):
+            os.makedirs(PLOTS_DIR, exist_ok=True)
+        plot_filename = f"{os.path.splitext(test_data_filename)[0]}_results_plot.svg"
+        plt.savefig(os.path.join(PLOTS_DIR, plot_filename), format='svg')
+
+        plt.draw()
+
+        print('')
     plt.show()
