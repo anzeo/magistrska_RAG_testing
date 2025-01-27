@@ -1,12 +1,71 @@
-import os
+import chromadb
 from sentence_transformers import SentenceTransformer
 import yaml
 import numpy as np
+import torch
 
-EMBEDDINGS_FILE = 'embeddings/sBERT/embeddings.npy'
+COLLECTION_NAME = 'sbert_embeddings_collection'
 
 # Load the pre-trained sBERT model
 model = SentenceTransformer('paraphrase-multilingual-mpnet-base-v2')
+
+# Initialize ChromaDB client
+chroma_client = chromadb.PersistentClient(path="./chroma_data")
+
+class EmbeddingManager:
+    """Singleton class to manage embeddings."""
+    _instance = None
+    _collection = None
+
+    @staticmethod
+    def get_instance():
+        """Get the singleton instance of the class."""
+        if EmbeddingManager._instance is None:
+            EmbeddingManager._instance = EmbeddingManager()
+        return EmbeddingManager._instance
+
+    def get_collection(self):
+        """Retrieve or create the embeddings collection."""
+        if EmbeddingManager._collection is None:
+            EmbeddingManager._collection = chroma_client.get_or_create_collection(COLLECTION_NAME, metadata={"hnsw:space": "cosine"})
+        return EmbeddingManager._collection
+
+    def prepare_data(self):
+        """Prepare and store embeddings in ChromaDB."""
+        with open('ai_act.yaml', 'r') as file:
+            data = yaml.safe_load(file)
+
+        collection = self.get_collection()
+
+        for d in data['cleni']:
+            text = (
+                d['poglavje']['naslov'] + "\n" +
+                (d['oddelek']['naslov'] + "\n" if d['oddelek'] else '') +
+                d['naslov'] + "\n" +
+                d['vsebina']
+            )
+            embedding = preprocess(text)
+            collection.add(
+                ids=[d['id_elementa']],
+                embeddings=[embedding],
+                metadatas=[{"type": "cleni"}]
+            )
+
+        for d in data['tocke']:
+            text = d['vsebina']
+            embedding = preprocess(text)
+            collection.add(
+                ids=[d['id_elementa']],
+                embeddings=[embedding],
+                metadatas=[{"type": "tocke"}]
+            )
+
+    def load_embeddings(self):
+        """Ensure embeddings are loaded into ChromaDB."""
+        collection = self.get_collection()
+        if collection.count() == 0:  # Check if the collection is empty
+            print("Storing embeddings in ChromaDB...")
+            self.prepare_data()
 
 
 def chunk_text(text, chunk_size=512):
@@ -17,66 +76,34 @@ def chunk_text(text, chunk_size=512):
 
 def preprocess(text):
     chunks = chunk_text(text)
-    chunk_embeddings = model.encode(chunks)
-    return np.mean(chunk_embeddings, axis=0)
+    chunk_embeddings = torch.tensor(model.encode(chunks))
+    mean_embedding = torch.mean(chunk_embeddings, dim=0).squeeze(0)
+
+    normalized_embedding = mean_embedding / mean_embedding.norm(p=2, dim=0, keepdim=True)
+
+    return normalized_embedding.numpy()
 
 
-def search(query, embeddings, top_n=None):
-    query_embedding = model.encode(query)
+def search(query, top_n=None):
+    embedding_manager = EmbeddingManager.get_instance()
+    embedding_manager.load_embeddings()
 
-    similarity_scores = model.similarity(query_embedding, embeddings).numpy().flatten()
+    collection = embedding_manager.get_collection()
+    query_embedding = preprocess(query)
 
-    if top_n == None:
-        # Take all relevant results
-        top_indices = np.argsort(similarity_scores)[::-1]
-    else:
-        # Take only the top n relevant results
-        top_indices = np.argsort(similarity_scores)[-top_n:][::-1]
+    results = collection.query(
+        query_embeddings=[query_embedding],
+        n_results=top_n or collection.count(),
+        include=['distances']
+    )
 
-    return top_indices, similarity_scores[top_indices]
-
-
-def prepare_data():
-    with open('ai_act.yaml', 'r') as file:
-        data = yaml.safe_load(file)
-
-    cleni = [f"{d['id_elementa']}" for d in data['cleni']]
-    tocke = [f"{d['id_elementa']}" for d in data['tocke']]
-    enote = cleni + tocke
-
-    if os.path.exists(EMBEDDINGS_FILE):
-        print("Loading existing embeddings...")
-        preprocessed_enote_embeddings = np.load(EMBEDDINGS_FILE)
-    else:
-        print("Getting new embeddings and storing them to file...\n")
-
-        preprocessed_cleni_embeddings = [
-            preprocess(
-                d['poglavje']['naslov'] + "\n" + 
-                (d['oddelek']['naslov'] + "\n" if d['oddelek'] else '') + 
-                d['naslov'] + "\n" + 
-                d['vsebina']
-            ) for d in data['cleni']]
-        
-        preprocessed_tocke_embeddings = [
-            preprocess(d['vsebina']) for d in data['tocke']
-        ]
-
-        preprocessed_enote_embeddings = preprocessed_cleni_embeddings + preprocessed_tocke_embeddings
-
-        if not os.path.exists(os.path.dirname(EMBEDDINGS_FILE)):
-            os.makedirs(os.path.dirname(EMBEDDINGS_FILE), exist_ok=True)
-
-        np.save(EMBEDDINGS_FILE, preprocessed_enote_embeddings)
-
-    return enote, np.array(preprocessed_enote_embeddings) 
-
+    return list(zip(results["ids"][0], np.subtract(1.0, results["distances"])[0]))
 
 def get_relevant_results(query="Katere zahteve morajo izpolnjevati visokotvegani sistemi UI v zvezi s preglednostjo in zagotavljanjem informacij uvajalcem?", top_n=None):
-    enote, preprocessed_enote_embeddings = prepare_data()
-
-    top_indices, scores = search(query, preprocessed_enote_embeddings, top_n)
+    results = search(query, top_n)
 
     print("Relevantne enote:")
-    for idx, score in zip(top_indices, scores):
-        print(f"{enote[idx]} s podobnostjo {score}")
+    for idx, score in results:
+        print(f"{idx} s podobnostjo {score}")
+
+get_relevant_results("Kakšne kazni bi lahko doletele šole ali učitelji, če uporabljajo orodja UI, ki ne upoštevajo pravil EU?")
