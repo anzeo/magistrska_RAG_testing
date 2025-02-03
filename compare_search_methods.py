@@ -11,16 +11,14 @@ def get_tfidf_performance():
     avg_rank = 0
     ranks = []
 
-    enote, tfidf_matrix, vectorizer = search_tfidf.prepare_data()
-
     for test in test_data:
         query = test['vprasanje']
         target_unit = test['odgovor_enota']
-        top_indices, _ = search_tfidf.search(query, tfidf_matrix, vectorizer)
+        results = search_tfidf.search(query)
 
         target_unit_rank = 1
-        for idx in top_indices:
-            if enote[idx] == target_unit:
+        for element_id, score in results:
+            if element_id == target_unit:
                 break
             target_unit_rank += 1
 
@@ -36,16 +34,106 @@ def get_sbert_performance():
     avg_rank = 0
     ranks = []
 
-    enote, preprocessed_enote_embeddings = search_sbert.prepare_data()
-    
     for test in test_data:
         query = test['vprasanje']
         target_unit = test['odgovor_enota']
-        top_indices, _ = search_sbert.search(query, preprocessed_enote_embeddings)
+        results = search_sbert.search(query)
 
         target_unit_rank = 1
-        for idx in top_indices:
-            if enote[idx] == target_unit:
+        for element_id, score in results:
+            if element_id == target_unit:
+                break
+            target_unit_rank += 1
+
+        avg_rank += target_unit_rank
+        ranks.append(target_unit_rank)
+
+    return avg_rank / len(test_data), ranks
+
+
+def get_Llama_performance():
+    import search_Llama as search_Llama
+
+    avg_rank = 0
+    ranks = []
+
+    for test in test_data:
+        query = test['vprasanje']
+        target_unit = test['odgovor_enota']
+        results = search_Llama.search(query)
+
+        target_unit_rank = 1
+        for element_id, score in results:
+            if element_id == target_unit:
+                break
+            target_unit_rank += 1
+
+        avg_rank += target_unit_rank
+        ranks.append(target_unit_rank)
+
+    return avg_rank / len(test_data), ranks
+
+
+def get_openai_performance():
+    import search_openai as search_openai
+
+    avg_rank = 0
+    ranks = []
+
+    for test in test_data:
+        query = test['vprasanje']
+        target_unit = test['odgovor_enota']
+        results = search_openai.search(query)
+
+        target_unit_rank = 1
+        for element_id, score in results:
+            if element_id == target_unit:
+                break
+            target_unit_rank += 1
+
+        avg_rank += target_unit_rank
+        ranks.append(target_unit_rank)
+
+    return avg_rank / len(test_data), ranks
+
+
+def get_sloberta_performance():
+    import search_sloberta as search_sloberta
+
+    avg_rank = 0
+    ranks = []
+
+    for test in test_data:
+        query = test['vprasanje']
+        target_unit = test['odgovor_enota']
+        results = search_sloberta.search(query)
+
+        target_unit_rank = 1
+        for element_id, score in results:
+            if element_id == target_unit:
+                break
+            target_unit_rank += 1
+
+        avg_rank += target_unit_rank
+        ranks.append(target_unit_rank)
+
+    return avg_rank / len(test_data), ranks
+
+
+def get_XLMRoberta_performance():
+    import search_XLMRoberta as search_XLMRoberta
+
+    avg_rank = 0
+    ranks = []
+
+    for test in test_data:
+        query = test['vprasanje']
+        target_unit = test['odgovor_enota']
+        results = search_XLMRoberta.search(query)
+
+        target_unit_rank = 1
+        for element_id, score in results:
+            if element_id == target_unit:
                 break
             target_unit_rank += 1
 
@@ -64,13 +152,21 @@ if __name__ == '__main__':
 
         tfidf_avg_rank, tfidf_ranks = get_tfidf_performance()
         sbert_avg_rank, sbert_ranks = get_sbert_performance()
+        Llama_avg_rank, Llama_ranks = get_Llama_performance()
+        openai_avg_rank, openai_ranks = get_openai_performance()
+        sloberta_avg_rank, sloberta_ranks = get_sloberta_performance()
+        XLMRoberta_avg_rank, XLMRoberta_ranks = get_XLMRoberta_performance()
 
         print(f"Povprečen rank ciljne enote s TF-IDF: {tfidf_avg_rank:.2f}")
         print(f"Povprečen rank ciljne enote z sBERT: {sbert_avg_rank:.2f}")
+        print(f"Povprečen rank ciljne enote z Llama: {Llama_avg_rank:.2f}")
+        print(f"Povprečen rank ciljne enote z OpenAI: {openai_avg_rank:.2f}")
+        print(f"Povprečen rank ciljne enote s sloberta: {sloberta_avg_rank:.2f}")
+        print(f"Povprečen rank ciljne enote z XLM-Roberta: {XLMRoberta_avg_rank:.2f}")
 
         plt.figure(figsize=(8, 6))  # Set the figure size
 
-        plt.boxplot([tfidf_ranks, sbert_ranks], patch_artist=True, tick_labels=['TF-IDF', 'sBERT'])
+        plt.boxplot([tfidf_ranks, sbert_ranks, Llama_ranks, openai_ranks, sloberta_ranks, XLMRoberta_ranks], patch_artist=True, tick_labels=['TF-IDF', 'sBERT', 'Llama', 'OpenAI', 'sloberta', 'XLM-Roberta'])
 
         plt.title(f'{test_data_filename}\nPrimerjava povprečnega ranga ciljne enote')
         plt.ylabel('Rank')

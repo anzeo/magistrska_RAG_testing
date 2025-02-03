@@ -106,5 +106,3 @@ def get_relevant_results(query="Katere zahteve morajo izpolnjevati visokotvegani
     print("Relevantne enote:")
     for idx, score in results:
         print(f"{idx} s podobnostjo {score}")
-
-get_relevant_results("Kaj naj storim, če orodje umetne inteligence, ki ga uporabljam v učilnici, povzroči resno težavo in komu naj to prijavim?")

@@ -105,5 +105,3 @@ def get_relevant_results(query="Katere zahteve morajo izpolnjevati visokotvegani
     print("Relevantne enote:")
     for idx, score in results:
         print(f"{idx} s podobnostjo {score}")
-
-get_relevant_results("Kakšne kazni bi lahko doletele šole ali učitelji, če uporabljajo orodja UI, ki ne upoštevajo pravil EU?")

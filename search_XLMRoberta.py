@@ -107,5 +107,3 @@ def get_relevant_results(query="Katere zahteve morajo izpolnjevati visokotvegani
     for idx, score in results:
         print(f"{idx} s podobnostjo {score}")
         
-
-get_relevant_results("Kdaj začne uredba veljati in se uporabljati?")
