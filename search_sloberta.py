@@ -1,5 +1,6 @@
 import chromadb
 import numpy as np
+from chromadb.api.types import IncludeEnum
 from transformers import AutoTokenizer, AutoModel
 import torch
 import yaml
@@ -7,7 +8,7 @@ import yaml
 COLLECTION_NAME = 'sloberta_embeddings_collection'
 
 model_name = "EMBEDDIA/sloberta"
-tokenizer = AutoTokenizer.from_pretrained(model_name, torch_dtype=torch.float16)
+tokenizer = AutoTokenizer.from_pretrained(model_name)
 model = AutoModel.from_pretrained(model_name)
 
 # Initialize ChromaDB client
@@ -28,7 +29,8 @@ class EmbeddingManager:
     def get_collection(self):
         """Retrieve or create the embeddings collection."""
         if EmbeddingManager._collection is None:
-            EmbeddingManager._collection = chroma_client.get_or_create_collection(COLLECTION_NAME, metadata={"hnsw:space": "cosine"})
+            EmbeddingManager._collection = chroma_client.get_or_create_collection(COLLECTION_NAME,
+                                                                                  metadata={"hnsw:space": "cosine"})
         return EmbeddingManager._collection
 
     def prepare_data(self):
@@ -40,10 +42,10 @@ class EmbeddingManager:
 
         for d in data['cleni']:
             text = (
-                d['poglavje']['naslov'] + "\n" +
-                (d['oddelek']['naslov'] + "\n" if d['oddelek'] else '') +
-                d['naslov'] + "\n" +
-                d['vsebina']
+                    d['poglavje']['naslov'] + "\n" +
+                    (d['oddelek']['naslov'] + "\n" if d['oddelek'] else '') +
+                    d['naslov'] + "\n" +
+                    d['vsebina']
             )
             embedding = preprocess(text)
             collection.add(
@@ -69,19 +71,73 @@ class EmbeddingManager:
             self.prepare_data()
 
 
+# def chunk_text(text, chunk_size=512):
+#     words = text.split()
+#     chunks = [words[i:i + chunk_size] for i in range(0, len(words), chunk_size)]
+#     return [' '.join(chunk) for chunk in chunks]
+
+# def preprocess(text):
+#     chunks = chunk_text(text)
+#
+#     encoding = tokenizer.batch_encode_plus(chunks, padding=True, return_tensors='pt')
+#     with torch.no_grad():
+#         outputs = model(**encoding)
+#
+#     masked_hidden_states = outputs.last_hidden_state * encoding['attention_mask'].unsqueeze(-1)
+#
+#     # for i in range(len(encoding['input_ids'])):
+#     #     tokens = tokenizer.convert_ids_to_tokens(encoding['input_ids'][i])
+#     #     for token, embedding in zip(tokens, masked_hidden_states[i]):
+#     #         print(f"Token: {token}, Embedding Dimension: {embedding.shape}, Zero: {torch.all(embedding == 0)}")
+#     #     print()
+#
+#     valid_token_counts = encoding['attention_mask'].sum(dim=1).unsqueeze(1)  # Count of non padding tokens
+#     summed_embeddings = masked_hidden_states.sum(dim=1)  # Sum the embedding vectors of all tokens in each chunk
+#     sentence_embeddings = summed_embeddings / valid_token_counts.clamp(
+#         min=1e-9)  # Get sentence embeddings of each chunk
+#
+#     mean_embedding = sentence_embeddings.mean(dim=0)
+#     normalized_embedding = mean_embedding / mean_embedding.norm(p=2, dim=0, keepdim=True)
+#
+#     return normalized_embedding.numpy()
+
+
+def chunk_encoding(encoding, max_chunk_size=512, stride=256):
+    """Chunk tokenized text, so it doesn't exceed model's max input length (for BERT models typically 512)"""
+    input_ids = encoding['input_ids'][0]
+    attention_mask = encoding['attention_mask'][0]
+
+    # Chunk input_ids and attention_mask
+    input_id_chunks = [input_ids[i:i + max_chunk_size] for i in range(0, len(input_ids), max_chunk_size - stride)]
+    attention_mask_chunks = [attention_mask[i:i + max_chunk_size] for i in
+                             range(0, len(attention_mask), max_chunk_size - stride)]
+
+    # Pad chunks to max_chunk_size and stack them
+    input_ids_padded = torch.stack([torch.cat([chunk, torch.zeros(max_chunk_size - len(chunk), dtype=torch.long)])
+                                    for chunk in input_id_chunks])
+    attention_mask_padded = torch.stack([torch.cat([chunk, torch.zeros(max_chunk_size - len(chunk), dtype=torch.long)])
+                                         for chunk in attention_mask_chunks])
+
+    return {'input_ids': input_ids_padded, 'attention_mask': attention_mask_padded}
+
+
 def preprocess(text):
-    encoding = tokenizer.batch_encode_plus([text], padding=True, truncation=True, return_tensors='pt', add_special_tokens=True)
-
-    input_ids = encoding['input_ids']  # Token IDs
-    attention_mask = encoding['attention_mask']  # Attention mask
-
+    encoding = tokenizer.encode_plus(text, padding=True, truncation=False, return_tensors='pt')
+    chunked_encoding = chunk_encoding(encoding)
     with torch.no_grad():
-        outputs = model(input_ids, attention_mask=attention_mask)
-        sentence_embedding = outputs.last_hidden_state.mean(dim=1)
+        outputs = model(**chunked_encoding)
 
-    normalized_embedding = sentence_embedding / sentence_embedding.norm(p=2, dim=1, keepdim=True)
+    masked_hidden_states = outputs.last_hidden_state * chunked_encoding['attention_mask'].unsqueeze(-1).float()
 
-    return normalized_embedding.squeeze(0).numpy()
+    valid_token_counts = chunked_encoding['attention_mask'].sum(dim=1).unsqueeze(1)  # Count of non padding tokens
+    summed_embeddings = masked_hidden_states.sum(dim=1)  # Sum the embedding vectors of all tokens in each chunk
+    sentence_embeddings = summed_embeddings / valid_token_counts.clamp(
+        min=1e-9)  # Get sentence embeddings of each chunk
+
+    mean_embedding = sentence_embeddings.mean(dim=0)
+    normalized_embedding = mean_embedding / mean_embedding.norm(p=2, dim=0, keepdim=True)
+
+    return normalized_embedding.numpy()
 
 
 def search(query, top_n=None):
@@ -94,13 +150,15 @@ def search(query, top_n=None):
     results = collection.query(
         query_embeddings=[query_embedding],
         n_results=top_n or collection.count(),
-        include=['distances']
+        include=[IncludeEnum.distances]
     )
 
     return list(zip(results["ids"][0], np.subtract(1.0, results["distances"])[0]))
 
 
-def get_relevant_results(query="Katere zahteve morajo izpolnjevati visokotvegani sistemi UI v zvezi s preglednostjo in zagotavljanjem informacij uvajalcem?", top_n=None):
+def get_relevant_results(
+        query="Katere zahteve morajo izpolnjevati visokotvegani sistemi UI v zvezi s preglednostjo in zagotavljanjem informacij uvajalcem?",
+        top_n=None):
     results = search(query, top_n)
 
     print("Relevantne enote:")
