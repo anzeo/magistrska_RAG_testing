@@ -13,9 +13,9 @@ classla.download('sl')
 nlp = classla.Pipeline('sl', processors='tokenize,pos,lemma')
 stop_words = set(stopwords.words('slovene'))
 
-EMBEDDINGS_FILE = 'embeddings/tfidf2/embeddings.npz'
-VECTORIZER_FILE = 'embeddings/tfidf2/vectorizer.pkl'
-METADATA_FILE = 'embeddings/tfidf2/metadata.json'
+EMBEDDINGS_FILE = 'embeddings/tfidf/embeddings.npz'
+VECTORIZER_FILE = 'embeddings/tfidf/vectorizer.pkl'
+METADATA_FILE = 'embeddings/tfidf/metadata.json'
 
 class EmbeddingManager:
     """Singleton class to manage embeddings."""
