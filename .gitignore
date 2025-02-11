@@ -164,5 +164,7 @@ cython_debug/
 embeddings
 plots
 
+.idea
+
 .env
 chroma_data
