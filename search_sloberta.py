@@ -28,10 +28,10 @@ class EmbeddingManager:
 
     def get_collection(self):
         """Retrieve or create the embeddings collection."""
-        if EmbeddingManager._collection is None:
-            EmbeddingManager._collection = chroma_client.get_or_create_collection(COLLECTION_NAME,
+        if self._collection is None:
+            self._collection = chroma_client.get_or_create_collection(COLLECTION_NAME,
                                                                                   metadata={"hnsw:space": "cosine"})
-        return EmbeddingManager._collection
+        return self._collection
 
     def prepare_data(self):
         """Prepare and store embeddings in ChromaDB."""
@@ -140,7 +140,10 @@ def preprocess(text):
     return normalized_embedding.numpy()
 
 
-def search(query, top_n=None):
+def search(query, top_n=None, unit_conditions: list[str] = None):
+    if unit_conditions is None:
+        unit_conditions = list(['cleni', 'tocke'])
+
     embedding_manager = EmbeddingManager.get_instance()
     embedding_manager.load_embeddings()
 
@@ -150,7 +153,8 @@ def search(query, top_n=None):
     results = collection.query(
         query_embeddings=[query_embedding],
         n_results=top_n or collection.count(),
-        include=[IncludeEnum.distances]
+        include=[IncludeEnum.distances],
+        where={"type": {"$in": unit_conditions}},
     )
 
     return list(zip(results["ids"][0], np.subtract(1.0, results["distances"])[0]))

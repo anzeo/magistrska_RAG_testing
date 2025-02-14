@@ -1,4 +1,5 @@
 import chromadb
+from chromadb.api.types import IncludeEnum
 from sentence_transformers import SentenceTransformer
 import yaml
 import numpy as np
@@ -26,9 +27,9 @@ class EmbeddingManager:
 
     def get_collection(self):
         """Retrieve or create the embeddings collection."""
-        if EmbeddingManager._collection is None:
-            EmbeddingManager._collection = chroma_client.get_or_create_collection(COLLECTION_NAME, metadata={"hnsw:space": "cosine"})
-        return EmbeddingManager._collection
+        if self._collection is None:
+            self._collection = chroma_client.get_or_create_collection(COLLECTION_NAME, metadata={"hnsw:space": "cosine"})
+        return self._collection
 
     def prepare_data(self):
         """Prepare and store embeddings in ChromaDB."""
@@ -68,9 +69,9 @@ class EmbeddingManager:
             self.prepare_data()
 
 
-def chunk_text(text, chunk_size=512):
+def chunk_text(text, chunk_size=512, stride=256):
     words = text.split()
-    chunks = [words[i:i + chunk_size] for i in range(0, len(words), chunk_size)]
+    chunks = [words[i:i + chunk_size] for i in range(0, len(words), chunk_size - stride)]
     return [' '.join(chunk) for chunk in chunks]
 
 
@@ -84,7 +85,10 @@ def preprocess(text):
     return normalized_embedding.numpy()
 
 
-def search(query, top_n=None):
+def search(query, top_n=None, unit_conditions: list[str] = None):
+    if unit_conditions is None:
+        unit_conditions = list(['cleni', 'tocke'])
+
     embedding_manager = EmbeddingManager.get_instance()
     embedding_manager.load_embeddings()
 
@@ -94,10 +98,12 @@ def search(query, top_n=None):
     results = collection.query(
         query_embeddings=[query_embedding],
         n_results=top_n or collection.count(),
-        include=['distances']
+        include=[IncludeEnum.distances],
+        where={"type": {"$in": unit_conditions}},
     )
 
     return list(zip(results["ids"][0], np.subtract(1.0, results["distances"])[0]))
+
 
 def get_relevant_results(query="Katere zahteve morajo izpolnjevati visokotvegani sistemi UI v zvezi s preglednostjo in zagotavljanjem informacij uvajalcem?", top_n=None):
     results = search(query, top_n)
