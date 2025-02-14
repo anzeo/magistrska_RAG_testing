@@ -5,6 +5,8 @@ import matplotlib.pyplot as plt
 TEST_DATA_DIR = 'data/test'
 PLOTS_DIR = 'plots'
 
+SEARCH_UNITS = ["cleni", "tocke"]
+
 def get_tfidf_performance():
     import search_tfidf as search_tfidf
 
@@ -14,7 +16,7 @@ def get_tfidf_performance():
     for test in test_data:
         query = test['vprasanje']
         target_unit = test['odgovor_enota']
-        results = search_tfidf.search(query)
+        results = search_tfidf.search(query, unit_conditions=SEARCH_UNITS)
 
         target_unit_rank = 1
         for element_id, score in results:
@@ -37,7 +39,7 @@ def get_sbert_performance():
     for test in test_data:
         query = test['vprasanje']
         target_unit = test['odgovor_enota']
-        results = search_sbert.search(query)
+        results = search_sbert.search(query, unit_conditions=SEARCH_UNITS)
 
         target_unit_rank = 1
         for element_id, score in results:
@@ -60,7 +62,7 @@ def get_Llama_performance():
     for test in test_data:
         query = test['vprasanje']
         target_unit = test['odgovor_enota']
-        results = search_Llama.search(query)
+        results = search_Llama.search(query, unit_conditions=SEARCH_UNITS)
 
         target_unit_rank = 1
         for element_id, score in results:
@@ -83,7 +85,7 @@ def get_openai_performance():
     for test in test_data:
         query = test['vprasanje']
         target_unit = test['odgovor_enota']
-        results = search_openai.search(query)
+        results = search_openai.search(query, unit_conditions=SEARCH_UNITS)
 
         target_unit_rank = 1
         for element_id, score in results:
@@ -106,7 +108,7 @@ def get_sloberta_performance():
     for test in test_data:
         query = test['vprasanje']
         target_unit = test['odgovor_enota']
-        results = search_sloberta.search(query)
+        results = search_sloberta.search(query, unit_conditions=SEARCH_UNITS)
 
         target_unit_rank = 1
         for element_id, score in results:
@@ -129,7 +131,7 @@ def get_XLMRoberta_performance():
     for test in test_data:
         query = test['vprasanje']
         target_unit = test['odgovor_enota']
-        results = search_XLMRoberta.search(query)
+        results = search_XLMRoberta.search(query, unit_conditions=SEARCH_UNITS)
 
         target_unit_rank = 1
         for element_id, score in results:
