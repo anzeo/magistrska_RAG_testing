@@ -19,18 +19,19 @@ files_map = {
 }
 
 
-def delete_embeddings(key):
-    if key not in collection_map and key not in files_map:
-        print(
-            f"Error: Invalid collection name '{key}'. Choose from {list(collection_map.keys()) + list(files_map.keys())}.")
-        return
-
-    if key in files_map:
+def delete_folder(key):
+    try:
         folder = Path(files_map[key])
         if folder.exists() and folder.is_dir():
+            print(f"Deleting embeddings: {folder.name}...")
             shutil.rmtree(folder)
-            print(f"Deleted {key} embeddings")
-    else:
+            print(f"Embeddings '{folder.name}' deleted successfully!")
+    except Exception as e:
+        print("Error: ", e)
+
+
+def delete_collection(key):
+    try:
         collection_name = collection_map[key]
 
         # Initialize ChromaDB client
@@ -40,11 +41,32 @@ def delete_embeddings(key):
         print(f"Deleting embeddings: {collection_name}...")
         chroma_client.delete_collection(collection_name)
         print(f"Embeddings '{collection_name}' deleted successfully!")
+    except Exception as e:
+        print("Error: ", e)
+
+
+def delete_embeddings(key):
+    if key == "all":
+        for k in collection_map.keys():
+            delete_collection(k)
+        for k in files_map.keys():
+            delete_folder(k)
+    else:
+        if key not in collection_map and key not in files_map:
+            print(
+                f"Error: Invalid collection name '{key}'. Choose from {list(collection_map.keys()) + list(files_map.keys())}.")
+            return
+
+        if key in files_map:
+            delete_folder(key)
+        else:
+            delete_collection(key)
+
 
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
-        print("Usage: python delete_embeddings.py <collection_name>")
+        print("Usage: python delete_embeddings.py <collection_name> | all")
         sys.exit(1)
 
     delete_embeddings(sys.argv[1])
