@@ -1,4 +1,6 @@
 import os
+
+import numpy as np
 import yaml
 import matplotlib.pyplot as plt
 
@@ -6,6 +8,7 @@ TEST_DATA_DIR = 'data/test'
 PLOTS_DIR = 'plots'
 
 SEARCH_UNITS = ["cleni", "tocke"]
+
 
 def get_tfidf_performance():
     import search_tfidf as search_tfidf
@@ -145,12 +148,69 @@ def get_XLMRoberta_performance():
     return avg_rank / len(test_data), ranks
 
 
+def draw_box_plot(all_ranks, filename):
+    """
+    Draws and saves a box plot to visualize the performance of different approaches based on their ranking scores.
+
+    Args:
+        all_ranks (dict): A dictionary with:
+
+            - "ranks": A list of rank lists (one per approach).
+            - "labels": A list of corresponding approach names.
+
+        filename (str): The base filename for saving the plot.
+    """
+
+    plt.figure(figsize=(8, 6))  # Set the figure size
+
+    plt.boxplot(all_ranks["ranks"], patch_artist=True, tick_labels=all_ranks["labels"])
+
+    plt.title(f'{filename}\nPrimerjava povprečnega ranga ciljne enote')
+    plt.ylabel('Rank')
+    plt.xlabel('Metoda')
+
+    if not os.path.exists(PLOTS_DIR):
+        os.makedirs(PLOTS_DIR, exist_ok=True)
+    plot_filename = f"{os.path.splitext(filename)[0]}_box_plot.svg"
+    plt.savefig(os.path.join(PLOTS_DIR, plot_filename), format='svg')
+
+
+def draw_cdf_plot(all_ranks, filename):
+    """
+    Draws and saves a CDF (Cumulative Distribution Function) plot of rank distributions.
+
+    Args:
+        all_ranks (dict): A dictionary containing:
+
+            - "ranks": A list of rank lists (one per approach).
+            - "labels": A list of corresponding approach names.
+
+        filename (str): The base filename for saving the plot.
+    """
+    plt.figure(figsize=(8, 6))
+
+    for ranks, label in zip(all_ranks["ranks"], all_ranks["labels"]):
+        sorted_ranks = np.sort(ranks)
+        cdf = np.arange(1, len(sorted_ranks) + 1) / len(sorted_ranks)
+        plt.plot(sorted_ranks, cdf, label=label)
+
+    plt.xlabel("Rank")
+    plt.ylabel("Kumulativna verjetnost")
+    plt.title(f"{filename}\nCDF ciljne enote")
+    plt.legend()
+    plt.grid()
+
+    if not os.path.exists(PLOTS_DIR):
+        os.makedirs(PLOTS_DIR, exist_ok=True)
+    plot_filename = f"{os.path.splitext(filename)[0]}_cdf_plot.svg"
+    plt.savefig(os.path.join(PLOTS_DIR, plot_filename), format='svg')
+
+
 if __name__ == '__main__':
+    plt.ion()
     for test_data_filename in os.listdir(TEST_DATA_DIR):
         with open(os.path.join(TEST_DATA_DIR, test_data_filename), 'r') as file:
-            test_data = yaml.safe_load(file)    
-
-        print(f"Rezultati za podatke iz datoteke: {test_data_filename}")
+            test_data = yaml.safe_load(file)
 
         tfidf_avg_rank, tfidf_ranks = get_tfidf_performance()
         sbert_avg_rank, sbert_ranks = get_sbert_performance()
@@ -159,6 +219,8 @@ if __name__ == '__main__':
         sloberta_avg_rank, sloberta_ranks = get_sloberta_performance()
         XLMRoberta_avg_rank, XLMRoberta_ranks = get_XLMRoberta_performance()
 
+        print(f"Rezultati za podatke iz datoteke: {test_data_filename}")
+
         print(f"Povprečen rank ciljne enote s TF-IDF: {tfidf_avg_rank:.2f}")
         print(f"Povprečen rank ciljne enote z sBERT: {sbert_avg_rank:.2f}")
         print(f"Povprečen rank ciljne enote z Llama: {Llama_avg_rank:.2f}")
@@ -166,20 +228,11 @@ if __name__ == '__main__':
         print(f"Povprečen rank ciljne enote s sloberta: {sloberta_avg_rank:.2f}")
         print(f"Povprečen rank ciljne enote z XLM-Roberta: {XLMRoberta_avg_rank:.2f}")
 
-        plt.figure(figsize=(8, 6))  # Set the figure size
+        draw_box_plot({"ranks": [tfidf_ranks, sbert_ranks, Llama_ranks, openai_ranks, sloberta_ranks, XLMRoberta_ranks],
+                       "labels": ['TF-IDF', 'sBERT', 'Llama', 'OpenAI', 'sloberta', 'XLM-Roberta']}, test_data_filename)
 
-        plt.boxplot([tfidf_ranks, sbert_ranks, Llama_ranks, openai_ranks, sloberta_ranks, XLMRoberta_ranks], patch_artist=True, tick_labels=['TF-IDF', 'sBERT', 'Llama', 'OpenAI', 'sloberta', 'XLM-Roberta'])
-
-        plt.title(f'{test_data_filename}\nPrimerjava povprečnega ranga ciljne enote')
-        plt.ylabel('Rank')
-        plt.xlabel('Metoda')
-
-        if not os.path.exists(PLOTS_DIR):
-            os.makedirs(PLOTS_DIR, exist_ok=True)
-        plot_filename = f"{os.path.splitext(test_data_filename)[0]}_results_plot.svg"
-        plt.savefig(os.path.join(PLOTS_DIR, plot_filename), format='svg')
-
-        plt.draw()
+        draw_cdf_plot({"ranks": [tfidf_ranks, sbert_ranks, Llama_ranks, openai_ranks, sloberta_ranks, XLMRoberta_ranks],
+                       "labels": ['TF-IDF', 'sBERT', 'Llama', 'OpenAI', 'sloberta', 'XLM-Roberta']}, test_data_filename)
 
         print('')
-    plt.show()
+    plt.show(block=True)
